@@ -1,2 +1,0 @@
-# Frontend-Flutter
-Flutter project.
