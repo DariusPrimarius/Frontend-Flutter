@@ -41,6 +41,18 @@ main() async {
         print(element);
       });
   }
+
+  var response = await http
+      .get(Uri.parse('http://127.0.0.1:8000/accounts/user/'), headers: {
+    "Authorization": "Token 743ca8a8a4810ecf5404a759f55d834c9467dfc0"
+  });
+  print(response.body);
+
+  response = await http
+      .post(Uri.parse('http://127.0.0.1:8000/accounts/logout/'), headers: {
+    "Authorization": "Token 743ca8a8a4810ecf5404a759f55d834c9467dfc0"
+  });
+  print(response.body);
 }
 
 class AuthService {
