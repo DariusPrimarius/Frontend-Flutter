@@ -32,10 +32,20 @@ main() async {
       });
     }
   }
+  LoginResponse? loginResponse =
+      await authService.login('ziemniak', 'Kefir2233');
+  if (loginResponse != null) {
+    if (loginResponse.key != null) print(loginResponse.key);
+    if (loginResponse.non_field_errors != null)
+      loginResponse.non_field_errors!.forEach((element) {
+        print(element);
+      });
+  }
 }
 
 class AuthService {
   final registrationUri = Uri.parse('http://127.0.0.1:8000/registration/');
+  final loginUri = Uri.parse('http://127.0.0.1:8000/accounts/login/');
 
   Future<RegistrationResponse?> registration(
       String username, String email, String password1, String password2) async {
@@ -47,9 +57,17 @@ class AuthService {
     });
     return RegistrationResponse.fromJson(jsonDecode(response.body));
   }
+
+  Future<LoginResponse?> login(String usernameOrEmail, String password) async {
+    var response = await http.post(loginUri, body: {
+      'username': usernameOrEmail,
+      'password': password,
+    });
+    return LoginResponse.fromJson(jsonDecode(response.body));
+  }
 }
 
-// Responses
+// Responses register
 // correct            - {"key":"34fd14268ee7443403ec83f34a659c36deaf6172"}
 // user exist         - {"username":["A user with that username already exists."],"email":["A user is already registered with this e-mail address."]}
 // password diff      - {"non_field_errors":["The two password fields didn't match."]}
@@ -77,6 +95,26 @@ class RegistrationResponse {
       non_field_errors: mapOfBody['non_field_errors'],
       password1: mapOfBody['password1'],
       email: mapOfBody['email'],
+    );
+  }
+}
+
+// Responses login
+// correct            - {"key":"34fd14268ee7443403ec83f34a659c36deaf6172"}
+// user exist         - {"username":["A user with that username already exists."],"email":["A user is already registered with this e-mail address."]}
+// password diff      - {"non_field_errors":["The two password fields didn't match."]}
+// password 2 common  - {"password1":["This password is too short. It must contain at least 8 characters.","This password is too common.","This password is entirely numeric."]}
+// email used         - {"email":["A user is already registered with this e-mail address."]}
+
+class LoginResponse {
+  dynamic? key;
+  List<dynamic>? non_field_errors;
+  LoginResponse({this.key, this.non_field_errors});
+
+  factory LoginResponse.fromJson(mapOfBody) {
+    return LoginResponse(
+      key: mapOfBody['key'],
+      non_field_errors: mapOfBody['non_field_errors'],
     );
   }
 }
