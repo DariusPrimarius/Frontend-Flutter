@@ -58,6 +58,7 @@ main() async {
 class AuthService {
   final registrationUri = Uri.parse('http://127.0.0.1:8000/registration/');
   final loginUri = Uri.parse('http://127.0.0.1:8000/accounts/login/');
+  final logoutUri = Uri.parse('http://127.0.0.1:8000/accounts/log/');
 
   Future<RegistrationResponse?> registration(
       String username, String email, String password1, String password2) async {
